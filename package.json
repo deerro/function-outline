@@ -1,0 +1,67 @@
+{
+  "name": "function-outline",
+  "displayName": "function-outline",
+  "description": "",
+  "version": "0.0.3",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "icon": "logo.png",
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "function-outline.showOutline",
+        "title": "Show Function Outline"
+      },
+      {
+        "command": "functionOutline.gotoLine",
+        "title": "Go to Line"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "function-outline-view",
+          "title": "Function Outline",
+          "icon": "$(list-tree)"
+        }
+      ]
+    },
+    "views": {
+      "function-outline-view": [
+        {
+          "id": "function-outline-tree",
+          "name": "Function",
+          "icon": "$(list-tree)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "pnpm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.92.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1"
+  },
+  "publisher": "deerro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deerro/function-outline"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0"
+  }
+}
