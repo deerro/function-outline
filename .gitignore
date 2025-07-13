@@ -1,5 +1,3 @@
 node_modules/
-.vscode/
-.npmrc
 package-lock.json
-.vscode-test.mjs
+feature.md

@@ -45,11 +45,14 @@ class TreeDataProvider {
     const list = []
     for (const item of this.functions) {
       const command = {
-        command: 'functionOutline.gotoLine',
+        command: 'functionOutline.click',
         title: 'Go to Line',
         arguments: [
-          vscode.window.activeTextEditor.document.uri,
-          new vscode.Position(item.line, item.column)
+          {
+            data: item,
+            uri: vscode.window.activeTextEditor.document.uri,
+            position: new vscode.Position(item.line - 1, item.column)
+          }
         ]
       }
       const options = {

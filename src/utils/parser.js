@@ -17,12 +17,14 @@ function parser(sourceCode) {
       if (!funcName) return // 跳过匿名函数
 
       const { line, column } = getFunctionNameEndLocation(path.node.id)
+      const endLine = path.node.loc.end.line; // 移除-1，保持1-based
 
       functions.push({
         name: funcName,
         type: 'FunctionDeclaration',
         line,
         column,
+        endLine,
         context: null
       })
     },
@@ -43,12 +45,14 @@ function parser(sourceCode) {
 
       const { line, column } = getFunctionNameEndLocation(path.node.key)
       const className = getClassName(path)
+      const endLine = path.node.loc.end.line; // 移除-1，保持1-based
 
       functions.push({
         name: funcName,
         type: 'ClassMethod',
         line,
         column,
+        endLine,
         context: {
           type: 'Class',
           name: className
@@ -63,12 +67,14 @@ function parser(sourceCode) {
 
       const { line, column } = getFunctionNameEndLocation(path.node.key)
       const objectInfo = getObjectInfo(path)
+      const endLine = path.node.loc.end.line; // 移除-1，保持1-based
 
       functions.push({
         name: funcName,
         type: 'ObjectMethod',
         line,
         column,
+        endLine,
         context: objectInfo
       })
     }
@@ -79,18 +85,19 @@ function parser(sourceCode) {
     const funcName = getFunctionName(path)
     if (!funcName) return
 
-    // 获取函数名的AST节点
     const nameNode = getFunctionNameNode(path)
     if (!nameNode) return
 
     const { line, column } = getFunctionNameEndLocation(nameNode)
     const context = getFunctionContext(path)
+    const endLine = path.node.loc.end.line; // 移除-1，保持1-based
 
     functions.push({
       name: funcName,
       type,
       line,
       column,
+      endLine,
       context
     })
   }
@@ -114,17 +121,14 @@ function parser(sourceCode) {
   function getFunctionName(path) {
     const parent = path.parent
 
-    // 处理变量声明 (const fn = function() {})
     if (parent.type === 'VariableDeclarator') {
       return parent.id.name
     }
 
-    // 处理对象字面量中的方法 ({ fn() {} })
     if (parent.type === 'Property' && parent.value === path.node) {
       return parent.key.name
     }
 
-    // 其他情况（如对象属性赋值）不视为命名函数
     return null
   }
 
@@ -138,7 +142,6 @@ function parser(sourceCode) {
   function getFunctionContext(path) {
     const parent = path.parent
 
-    // 处理类中的方法/属性
     if (parent.type === 'ClassProperty' || parent.type === 'ClassMethod') {
       const className = getClassName(path)
       if (className) {
@@ -149,7 +152,6 @@ function parser(sourceCode) {
       }
     }
 
-    // 处理对象字面量中的方法
     if (parent.type === 'Property' && parent.value === path.node) {
       const objectInfo = getObjectInfo(path)
       if (objectInfo && objectInfo.name) {
@@ -164,11 +166,9 @@ function parser(sourceCode) {
   function getObjectInfo(path) {
     let currentPath = path.parentPath
 
-    // 向上查找直到找到变量声明或无法继续
     while (currentPath) {
       const node = currentPath.node
 
-      // 处理对象赋值给变量的情况
       if (currentPath.isVariableDeclarator()) {
         return {
           type: 'Object',
@@ -176,7 +176,6 @@ function parser(sourceCode) {
         }
       }
 
-      // 处理嵌套对象字面量
       if (
         currentPath.isProperty() &&
         currentPath.parentPath.isObjectExpression()
@@ -196,7 +195,7 @@ function parser(sourceCode) {
     return null
   }
 
-  // 获取函数名结束位置
+  // 获取函数名结束位置（移除-1，保持1-based）
   function getFunctionNameEndLocation(pathOrNode) {
     if (pathOrNode && pathOrNode.node) {
       pathOrNode = pathOrNode.node
@@ -209,7 +208,7 @@ function parser(sourceCode) {
     const { end } = pathOrNode.loc
 
     return {
-      line: end.line - 1,
+      line: end.line, // 移除-1，保持1-based
       column: end.column
     }
   }

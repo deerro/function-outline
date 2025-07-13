@@ -11,7 +11,7 @@
   ],
   "activationEvents": [],
   "icon": "logo.png",
-  "main": "./extension.js",
+  "main": "./src/extension.js",
   "contributes": {
     "commands": [
       {
@@ -21,6 +21,9 @@
       {
         "command": "functionOutline.gotoLine",
         "title": "Go to Line"
+      },{
+        "command": "functionOutline.click",
+        "title": "Click"
       }
     ],
     "viewsContainers": {
