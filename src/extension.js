@@ -1,13 +1,13 @@
 const vscode = require('vscode')
-const TreeDataProvider = require('./src/treeDataProvider')
-const getFunctions = require('./src/utils/getFunctions')
-const getGotoCommand = require('./src/commands/getGotoCommand')
+const TreeDataProvider = require('./treeDataProvider')
+const getFunctions = require('./utils/getFunctions')
+const useGotoCommand = require('./commands/useGotoCommand')
 
 function activate(context) {
   console.log('插件已激活')
   const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
   // 注册命令
-  const gotoCommand = getGotoCommand()
+  const gotoCommand = useGotoCommand()
 
   // 获取函数数组
   const functions = getFunctions()

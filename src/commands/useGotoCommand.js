@@ -4,7 +4,7 @@ const vscode = require('vscode')
  * 注册一个跳转到指定位置的命令
  * @returns 已注册的命令的 disposable 对象
  */
-function getGotoCommand() {
+function useGotoCommand() {
   return vscode.commands.registerCommand(
     'functionOutline.gotoLine',
     (uri, position) => {
