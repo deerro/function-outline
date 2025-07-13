@@ -1,13 +1,14 @@
 const vscode = require('vscode')
 const TreeDataProvider = require('./treeDataProvider')
 const getFunctions = require('./utils/getFunctions')
-const useGotoCommand = require('./commands/useGotoCommand')
+
+const handleClick = require('./commands/HandleClick')
 
 function activate(context) {
   console.log('插件已激活')
   const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
   // 注册命令
-  const gotoCommand = useGotoCommand()
+  // const gotoCommand = useGotoCommand()
 
   // 获取函数数组
   const functions = getFunctions()
@@ -20,6 +21,11 @@ function activate(context) {
   const treeView = vscode.window.registerTreeDataProvider(
     'function-outline-tree',
     treeDataProvider
+  )
+
+  const clickCmd = vscode.commands.registerCommand(
+    'functionOutline.click',
+    handleClick
   )
 
   // 监听活动编辑器变化（切换标签）
@@ -60,8 +66,9 @@ function activate(context) {
 
   // 将新的监听器添加到订阅中
   context.subscriptions.push(
-    gotoCommand,
+    // gotoCommand,
     treeView,
+    clickCmd,
     activeEditorChangeListener,
     documentOpenListener,
     documentSaveListener // 新增订阅
